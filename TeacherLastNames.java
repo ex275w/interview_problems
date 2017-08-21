@@ -2,6 +2,21 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/*
+ * Ya revise el codigo. La solucion esta bien, es la correcta y la optima. Los comentarios que te voy hacer nomas son para mejorar la sintaxis del codigo.
+
+No es necesaria la variable "student", puedes hacer un if donde checas si el mapa contiene la key con el metodo map.containsKey(key).
+Si te devuelve false entonces dentro del if haces el map.put y le pasas una lista nueva. Despues del if agregas el firstname (entre o no entre al if).
+
+Para lo de las comas en lugar de usar String firstnames, usa un StringBuilder firstnames y el metodo append, para ir concatenando el String.
+Usar un StringBuilder es mejor porque va haciendo un buffer de los caracteres en lugar de estar creando muchos Strings nuevos, lo cual es malo para la memoria
+del programa. (Si quieres saber mas lee acerca de la pool de Strings en Java y acerca de como los Strings son inmutables).
+
+Updeatea tu codigo con los cambios que te di y listo.
+
+Pro tip (no es necesario que hagas esto): En Java 8 hay un metodo de la clase String que se llama join en el cual le puedes pasar un CharSequence y una lista y te junta los elementos de la lista con el (los) caracter(es) especificados.
+String.join(",", map.get(key));
+ * */
 
 public class TeacherLastNames {
 
@@ -17,40 +32,27 @@ public class TeacherLastNames {
 	}
 
 	public static void LastName(List<String> data){
-		HashMap<String, List<String>> map = new HashMap<String, List<String>>(); //Creamos un mapa, el string va a contener los apellidos y la list de String es donde se van a colocar todos los primeros nombres.
+		//Se crea un mapa con 
+		HashMap<String, List<String>> map = new HashMap<String, List<String>>();
+		
 		for(String i : data){
-			//Cortamos la string para separar el apellido y el primer nombre
 			String [] name = i.split(", ");
 			String LastName = name[0];
 			String FirstName = name[1];
 
-			//Se crea una nueva lista en base al apellido
-			List<String> student = map.get(LastName);
-
-			//Cuando captura un que la llave no tiene ningun valor se agrega esa lista personalizada al mapa y se llena con el nombre, cuando esa lista ya esta en ese key, simplemente se llena para no sobreescribir la lista
-			//Esto se hace para que cada Key tenga su lista personal de students y que no se copie entre ciclos el valor de students y ya que cuando se agrega un valor va a saber que lista tiene, no hay dificultades para anidar nuevos valores
-			if (student == null) {
-				student = new ArrayList<>();
-				map.put(LastName, student);
+			if (!map.containsKey(LastName)) {
+				map.put(LastName, new ArrayList<String>());
 			}
-			student.add(FirstName);
+			map.get(LastName).add(FirstName);
 		}
-		
-		//Se crea un string para manejar los primeros nombres y las commas
-		String firstnames = new String();
-		
-		//Se crea un for para cada apellido
+
 		for (String key : map.keySet() ) {
-			for(int i = 0; i < map.get(key).size(); i++){
-				if(i == 0){
-					firstnames = map.get(key).get(i); //Se llena el primer valor sin comma
-				}
-				else{
-					firstnames =firstnames + ", "+ map.get(key).get(i); //Para cuando hay mas de un valor se agrega una comma entre nombres
-				}
+			StringBuilder firstnames = new StringBuilder();
+			firstnames.append(map.get(key).get(0));
+			for(int i = 1; i < map.get(key).size(); i++){
+				firstnames.append(", "+map.get(key).get(i));
 			}
-			System.out.println(key +": "+firstnames); //Se imprime la lista ya que esta el formato de primeros nombres correctos y se pasa al siguiente apellido
+			System.out.println(key +": "+firstnames);
 		}
 	}
 }
-
